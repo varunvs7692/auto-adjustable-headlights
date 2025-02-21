@@ -51,7 +51,7 @@ void setup() {
 
   // Welcome message
   Serial.println("Setup complete. Enter commands to control the car:");
-  Serial.println("'f' - Forward, 'b' - Backward, 'l' - Left, 'r' - Right, 's' - Stop, 'a' - Autonomous mode");
+  Serial.println("'f' - Forward, 'b' - Backward, 'l' - Left, 'r' - Right, 's' - Stop");
 }
 
 void loop() {
@@ -60,13 +60,8 @@ void loop() {
     char command = Serial.read();
     executeCommand(command);
   }
-
-  // Continuously measure distance in autonomous mode
-  // Uncomment the following line to enable autonomous obstacle avoidance
-  // measureDistance();
 }
 
-// Function to execute commands based on serial input
 void executeCommand(char command) {
   switch (command) {
     case 'f':
@@ -84,19 +79,8 @@ void executeCommand(char command) {
     case 's':
       stopCar();
       break;
-    case 'a':
-      Serial.println("Entering autonomous mode...");
-      while (true) {
-        measureDistance();
-        // Break the loop if 's' is received to stop autonomous mode
-        if (Serial.available() > 0 && Serial.read() == 's') {
-          stopCar();
-          break;
-        }
-      }
-      break;
     default:
-      Serial.println("Invalid command. Use 'f', 'b', 'l', 'r', 's', or 'a'.");
+      Serial.println("Invalid command. Use 'f', 'b', 'l', 'r', or 's'.");
       break;
   }
 }
@@ -203,28 +187,8 @@ void measureDistance() {
   if (distance <= 10) {
     digitalWrite(ledBelow10cm, HIGH);  // Turn on LED for distance <= 10 cm
     digitalWrite(ledAbove10cm, LOW);   // Turn off LED for distance > 10 cm
-
-    // Stop the car
-    stopCar();
-    Serial.println("Obstacle detected! Stopping.");
-    delay(500); // Pause after stopping
-
-    // Reverse and turn to avoid obstacle
-    moveBackward();
-    delay(500);
-
-    turnRight();
-    delay(500);
-
-    moveForward();
   } else {
     digitalWrite(ledBelow10cm, LOW);   // Turn off LED for distance <= 10 cm
     digitalWrite(ledAbove10cm, HIGH);  // Turn on LED for distance > 10 cm
-
-    // Continue moving forward
-    moveForward();
   }
-
-  delay(100); // Short delay before next measurement
 }
-
