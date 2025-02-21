@@ -1,38 +1,35 @@
 #include <Arduino.h>
-#include <AFMotor.h>  // Include Adafruit Motor Shield library
+#include <SoftwareSerial.h>  // Include SoftwareSerial for Bluetooth
+#include <AFMotor.h>         // Include Adafruit Motor Shield library
 
 // Define pins for ultrasonic sensor
 const int trigPin = 7;
 const int echoPin = 6;
 
 // Define pins for LEDs
-const int ledBelow10cm = 8;  // LED for distance <= 10 cm
-const int ledAbove10cm = 9;   // LED for distance > 10 cm
+const int ledBelow10cm = 8;  // One LED for below 10 cm
+const int ledAbove10cm = 9;  // One LED for above 10 cm
+
+// Define pins for HC-05 Bluetooth module
+const int bluetoothTx = 0; // Tx of Arduino (not used for SoftwareSerial)
+const int bluetoothRx = 1; // Rx of Arduino (not used for SoftwareSerial)
+
+// Create a SoftwareSerial object for Bluetooth
+SoftwareSerial BTSerial(10, 11);  // RX, TX pins for Bluetooth communication
 
 // Create motor objects
-AF_DCMotor motor1(1, MOTOR12_64KHZ); // Motor 1 on M1
-AF_DCMotor motor2(2, MOTOR12_64KHZ); // Motor 2 on M2
-AF_DCMotor motor3(3, MOTOR34_64KHZ); // Motor 3 on M3
-AF_DCMotor motor4(4, MOTOR34_64KHZ); // Motor 4 on M4
+AF_DCMotor M1(1);
+AF_DCMotor M2(2);
+AF_DCMotor M3(3);
+AF_DCMotor M4(4);
 
-int motorSpeed = 200; // Set motor speed (range: 0-255)
-
-// Variables for distance measurement
-long duration;
-int distance;
-
-// Function prototypes
-void moveForward();
-void moveBackward();
-void turnRight();
-void turnLeft();
-void stopCar();
-void measureDistance();
-void executeCommand(char command);
+char value;
+int Speed = 200; // Set motor speed
 
 void setup() {
   // Initialize serial communication
-  Serial.begin(9600);
+  Serial.begin(9600);   // Serial Monitor communication
+  BTSerial.begin(9600); // Bluetooth communication
 
   // Set up pins for ultrasonic sensor and LEDs
   pinMode(trigPin, OUTPUT);
@@ -40,148 +37,116 @@ void setup() {
   pinMode(ledBelow10cm, OUTPUT);
   pinMode(ledAbove10cm, OUTPUT);
 
-  // Set initial motor speed
-  motor1.setSpeed(motorSpeed);
-  motor2.setSpeed(motorSpeed);
-  motor3.setSpeed(motorSpeed);
-  motor4.setSpeed(motorSpeed);
+  // Set motor speed
+  M1.setSpeed(Speed);
+  M2.setSpeed(Speed);
+  M3.setSpeed(Speed);
+  M4.setSpeed(Speed);
 
-  // Initial motor state (stopped)
-  stopCar();
-
-  // Welcome message
-  Serial.println("Setup complete. Enter commands to control the car:");
-  Serial.println("'f' - Forward, 'b' - Backward, 'l' - Left, 'r' - Right, 's' - Stop");
+  // Debugging message
+  Serial.println("Setup complete. Waiting for Bluetooth commands...");
 }
 
 void loop() {
-  // Check for serial input
-  if (Serial.available() > 0) {
-    char command = Serial.read();
-    executeCommand(command);
+  // Wait for Bluetooth control input
+  Bluetoothcontrol();
+}
+
+void Bluetoothcontrol() {
+  if (BTSerial.available() > 0) {
+    value = BTSerial.read();  // Read Bluetooth input
+    Serial.println(value);    // Debugging: print received value
+
+    // Control movement based on input
+    if (value == 'F') {       // Forward
+      forward();
+    } else if (value == 'B') {  // Backward
+      backward();
+    } else if (value == 'L') {  // Turn left
+      left();
+    } else if (value == 'R') {  // Turn right
+      right();
+    } else if (value == 'S') {  // Stop
+      Stop();
+    } else if (value == 'U') {  // Measure distance with ultrasonic sensor
+      measureDistance();
+    }
   }
 }
 
-void executeCommand(char command) {
-  switch (command) {
-    case 'f':
-      moveForward();
-      break;
-    case 'b':
-      moveBackward();
-      break;
-    case 'l':
-      turnLeft();
-      break;
-    case 'r':
-      turnRight();
-      break;
-    case 's':
-      stopCar();
-      break;
-    default:
-      Serial.println("Invalid command. Use 'f', 'b', 'l', 'r', or 's'.");
-      break;
-  }
+// Functions for motor control
+void forward() {
+  M1.run(FORWARD);
+  M2.run(FORWARD);
+  M3.run(FORWARD);
+  M4.run(FORWARD);
+  Serial.println("Moving Forward...");
 }
 
-// Function to move forward
-void moveForward() {
-  motor1.setSpeed(motorSpeed);
-  motor2.setSpeed(motorSpeed);
-  motor3.setSpeed(motorSpeed);
-  motor4.setSpeed(motorSpeed);
-
-  motor1.run(FORWARD);
-  motor2.run(FORWARD);
-  motor3.run(FORWARD);
-  motor4.run(FORWARD);
-
-  Serial.println("Moving forward...");
+void backward() {
+  M1.run(BACKWARD);
+  M2.run(BACKWARD);
+  M3.run(BACKWARD);
+  M4.run(BACKWARD);
+  Serial.println("Moving Backward...");
 }
 
-// Function to move backward
-void moveBackward() {
-  motor1.setSpeed(motorSpeed);
-  motor2.setSpeed(motorSpeed);
-  motor3.setSpeed(motorSpeed);
-  motor4.setSpeed(motorSpeed);
-
-  motor1.run(BACKWARD);
-  motor2.run(BACKWARD);
-  motor3.run(BACKWARD);
-  motor4.run(BACKWARD);
-
-  Serial.println("Moving backward...");
+void right() {
+  M1.run(BACKWARD);
+  M2.run(BACKWARD);
+  M3.run(FORWARD);
+  M4.run(FORWARD);
+  Serial.println("Turning Right...");
 }
 
-// Function to turn right
-void turnRight() {
-  motor1.setSpeed(motorSpeed);
-  motor2.setSpeed(motorSpeed);
-  motor3.setSpeed(motorSpeed);
-  motor4.setSpeed(motorSpeed);
-
-  motor1.run(FORWARD);   // Right motors forward
-  motor2.run(FORWARD);
-  motor3.run(BACKWARD);  // Left motors backward
-  motor4.run(BACKWARD);
-
-  Serial.println("Turning right...");
+void left() {
+  M1.run(FORWARD);
+  M2.run(FORWARD);
+  M3.run(BACKWARD);
+  M4.run(BACKWARD);
+  Serial.println("Turning Left...");
 }
 
-// Function to turn left
-void turnLeft() {
-  motor1.setSpeed(motorSpeed);
-  motor2.setSpeed(motorSpeed);
-  motor3.setSpeed(motorSpeed);
-  motor4.setSpeed(motorSpeed);
-
-  motor1.run(BACKWARD);  // Right motors backward
-  motor2.run(BACKWARD);
-  motor3.run(FORWARD);   // Left motors forward
-  motor4.run(FORWARD);
-
-  Serial.println("Turning left...");
+void Stop() {
+  M1.run(RELEASE);
+  M2.run(RELEASE);
+  M3.run(RELEASE);
+  M4.run(RELEASE);
+  Serial.println("Car Stopped.");
 }
 
-// Function to stop the car
-void stopCar() {
-  motor1.run(RELEASE);
-  motor2.run(RELEASE);
-  motor3.run(RELEASE);
-  motor4.run(RELEASE);
-
-  Serial.println("Car stopped.");
-}
-
-// Function to measure distance using the ultrasonic sensor
 void measureDistance() {
+  long duration;
+  int distance;
+
   // Trigger the ultrasonic sensor
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
-
   digitalWrite(trigPin, HIGH);
   delayMicroseconds(10);
-
   digitalWrite(trigPin, LOW);
 
   // Read the echo pin
-  duration = pulseIn(echoPin, HIGH, 30000); // Timeout after 30ms
+  duration = pulseIn(echoPin, HIGH);
 
-  // Calculate distance in cm
+  // Check if the duration is valid
+  if (duration == 0) {
+    Serial.println("Error: No echo received");
+    return;
+  }
+
+  // Calculate distance (in cm)
   distance = duration * 0.034 / 2;
 
-  // Handle out-of-range readings
-  if (distance == 0 || distance > 400) {
-    Serial.println("Out of range");
-    distance = 400; // Set to max distance
-  } else {
-    // Print distance to Serial Monitor
-    Serial.print("Distance: ");
-    Serial.print(distance);
-    Serial.println(" cm");
-  }
+  // Print distance to Serial Monitor
+  Serial.print("Distance: ");
+  Serial.print(distance);
+  Serial.println(" cm");
+
+  // Send distance data via Bluetooth
+  BTSerial.print("Distance: ");
+  BTSerial.print(distance);
+  BTSerial.println(" cm");
 
   // Control LEDs based on distance
   if (distance <= 10) {
