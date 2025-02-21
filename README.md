@@ -9,7 +9,7 @@ Design an auto-adjustable headlight system that tilts the headlights downward wh
 ## Working Principle
 
 1. Detection: Ultrasonic sensor and vehicle-to-vehicle detection sensor continuously scan for objects or vehicles.
-2. Measurement: If an object or vehicle is detected within 15 cm, sensor signals the microcontroller.
+2. Measurement: If an object or vehicle is detected within 10 cm, sensor signals the microcontroller.
 3. Adjustment: Microcontroller controls motor, tilting the headlight downward.
 4. Reset: Headlight returns to original position when the object or vehicle moves away.
 
