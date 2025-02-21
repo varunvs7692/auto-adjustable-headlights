@@ -1,5 +1,3 @@
-# auto-adjustable-headlights
-"Auto-adjustable headlight system with vehicle-to-vehicle detection"
 # Auto-Adjustable Headlights with Vehicle-to-Vehicle Detection
 
 ## Project Overview
