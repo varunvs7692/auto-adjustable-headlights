@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This project aims to design and implement an auto-adjustable headlight system that tilts the headlights downward when an object or another vehicle is detected within 10 cm to prevent glare. The system leverages ultrasonic sensors and vehicle-to-vehicle detection sensors to dynamically adjust the headlights, ensuring optimal visibility while enhancing road safety.
+This project aims to design and implement auto-adjustable headlight system that tilts the headlights downward when an object or another vehicle is detected to prevent glare. The system utilizes ultrasonic sensors and vehicle-to-vehicle detection to adjust the headlights, ensuring optimal visibility while enhancing road safety.
 
 ## Working Principle
 
