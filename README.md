@@ -1,4 +1,4 @@
-# Auto-Adjustable Headlights with Vehicle-to-Vehicle Detection
+# Auto-Adjustable Headlights 
 
 ## Project Overview
 
