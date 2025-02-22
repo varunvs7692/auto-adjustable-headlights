@@ -20,23 +20,6 @@ Modern cars, especially those equipped with advanced driver assistance systems (
 - **Function**: Measure the distance to nearby objects using sound waves.
 - **Usage**: Parking assistance and low-speed collision avoidance.
 
-### Lidar (Light Detection and Ranging)
-- **Function**: Uses laser pulses to create a detailed 3D map of the surroundings.
-- **Usage**: High-definition mapping, object detection, and obstacle avoidance.
-
-### Central Processing Unit (CPU) and Graphics Processing Unit (GPU)
-- **Function**: Process data from sensors in real-time.
-- **Usage**: Execute complex algorithms for object recognition and decision-making.
-
-## Algorithms and Techniques
-
-### Machine Learning and Neural Networks
-- **Function**: Train models to recognize and classify objects, including other vehicles.
-- **Usage**: Image and video analysis, pattern recognition, and predictive modeling.
-
-### Sensor Fusion
-- **Function**: Combine data from multiple sensors to create a comprehensive understanding of the environment.
-- **Usage**: Improve accuracy and reliability of object detection and tracking.
 
 ### Image Processing
 - **Function**: Analyze and interpret visual data from cameras.
