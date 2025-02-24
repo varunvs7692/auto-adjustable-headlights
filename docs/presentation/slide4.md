@@ -2,7 +2,7 @@
 
 **Detection:**
 
-- Ultrasonic Sensor (HC-SR04): Scans for objects within 15 cm.
+- Ultrasonic Sensor (HC-SR04): Scans for objects within 10 cm.
 - V2V Transceiver Module: Communicates with approaching vehicles using wireless signals.
 
 **Processing:**
